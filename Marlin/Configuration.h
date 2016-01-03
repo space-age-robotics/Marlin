@@ -412,7 +412,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
   #define Z_RAISE_BETWEEN_PROBINGS 5  //How much the extruder will be raised when traveling from between next probing points
 
   //#define Z_PROBE_SLED // turn on if you have a z-probe mounted on a sled like those designed by Charles Bell
-  //#define SLED_DOCKING_OFFSET 5 // the extra distance the X axis must travel to pickup the sled. 0 should be fine but you can push it further if you'd like.
+  //#define SLED_DOCKING_OFFSET 5 // the extra distance the X axis must travel to pickup the sled. 0 should be fine 
+                                  // but you can push it further if you'd like.
 
   //If defined, the Probe servo will be turned on only during movement and then turned off to avoid jerk
   //The value is the delay to turn the servo off after powered on - depends on the servo speed; 300ms is good value, but you can try lower it.
@@ -481,8 +482,23 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 #define HOMING_FEEDRATE {50*60, 50*60, 3*60, 0}  // set the homing speeds (mm/min)
 
 // default settings
+// MOTOR_STEPS_PER_REV    200
+// DRIVER_MICROSTEP        16
+// BIG_GEAR_TEETH          47
+// SMALL_GEAR_TEETH         9
+// HOB_EFFECTIVE_DIAMETER   7
+// PI                      3.141593
 
-#define DEFAULT_AXIS_STEPS_PER_UNIT   {49.545867, 49.545867, 3367.726, 834.724095}  // default steps per unit for Schamp's SAE Prusa I2
+//                                        759.901580
+//                                       16711.1104 / 21.991151
+//                                      (3200 * 5.222222) /  21.991151
+//                  (200 * 16)               *             (47 / 9)                / (7 * 3.14159)
+// ((MOTOR_STEPS_PER_REV * DRIVER_MICROSTEP) * (BIG_GEAR_TEETH / SMALL_GEAR_TEETH) / (HOB_EFFECTIVE_DIAMETER * _PI) )
+
+#define OLD_E_STEPS 834.724095
+#define NEW_E_STEPS 759.901580
+
+#define DEFAULT_AXIS_STEPS_PER_UNIT   {49.545867, 49.545867, 3367.726, NEW_E_STEPS}  // default steps per unit for Schamp's SAE Prusa I2
 // AMLS the Z axis freaks out with a feedrate greater than 200 mm / min
 #define DEFAULT_MAX_FEEDRATE          {500, 500, 3, 25}    // (mm/sec)
 #define DEFAULT_MAX_ACCELERATION      {9000,9000,100,10000}    // X, Y, Z, E maximum start speed for accelerated moves. E default values are good for Skeinforge 40+, for older versions raise them a lot.
@@ -544,8 +560,8 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 //#define ENCODER_STEPS_PER_MENU_ITEM 5 // Set according to ENCODER_PULSES_PER_STEP or your liking
 //#define ULTIMAKERCONTROLLER //as available from the Ultimaker online store.
 //#define ULTIPANEL  //the UltiPanel as on Thingiverse
-//#define LCD_FEEDBACK_FREQUENCY_HZ 1000	// this is the tone frequency the buzzer plays when on UI feedback. ie Screen Click
-//#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 100 // the duration the buzzer plays the UI feedback sound. ie Screen Click
+//#define LCD_FEEDBACK_FREQUENCY_HZ 2000	// this is the tone frequency the buzzer plays when on UI feedback. ie Screen Click
+//#define LCD_FEEDBACK_FREQUENCY_DURATION_MS 50 // the duration the buzzer plays the UI feedback sound. ie Screen Click
 
 // The MaKr3d Makr-Panel with graphic controller and SD support
 // http://reprap.org/wiki/MaKr3d_MaKrPanel
@@ -553,7 +569,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 
 // The RepRapDiscount Smart Controller (white PCB)
 // http://reprap.org/wiki/RepRapDiscount_Smart_Controller
-//#define REPRAP_DISCOUNT_SMART_CONTROLLER
+#define REPRAP_DISCOUNT_SMART_CONTROLLER
 
 // The GADGETS3D G3D LCD/SD Controller (blue PCB)
 // http://reprap.org/wiki/RAMPS_1.3/1.4_GADGETS3D_Shield_with_Panel
@@ -749,7 +765,7 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 // leaving it undefined or defining as 0 will disable the servo subsystem
 // If unsure, leave commented / disabled
 //
-//#define NUM_SERVOS 3 // Servo index starts with 0 for M280 command
+#define NUM_SERVOS 4 // Servo index starts with 0 for M280 command
 
 // Servo Endstops
 //
@@ -774,12 +790,12 @@ const bool Z_MAX_ENDSTOP_INVERTING = true; // set to true to invert the logic of
 //#define FILAMENT_SENSOR
 
 #define FILAMENT_SENSOR_EXTRUDER_NUM	0  //The number of the extruder that has the filament sensor (0,1,2)
-#define MEASUREMENT_DELAY_CM			14  //measurement delay in cm.  This is the distance from filament sensor to middle of barrel
+#define MEASUREMENT_DELAY_CM	       14  //measurement delay in cm.  This is the distance from filament sensor to middle of barrel
 
-#define DEFAULT_NOMINAL_FILAMENT_DIA  3.0  //Enter the diameter (in mm) of the filament generally used (3.0 mm or 1.75 mm) - this is then used in the slicer software.  Used for sensor reading validation
+#define DEFAULT_NOMINAL_FILAMENT_DIA   3.0  //Enter the diameter (in mm) of the filament generally used (3.0 mm or 1.75 mm) - this is then used in the slicer software.  Used for sensor reading validation
 #define MEASURED_UPPER_LIMIT          3.30  //upper limit factor used for sensor reading validation in mm
 #define MEASURED_LOWER_LIMIT          1.90  //lower limit factor for sensor reading validation in mm
-#define MAX_MEASUREMENT_DELAY			20  //delay buffer size in bytes (1 byte = 1cm)- limits maximum measurement delay allowable (must be larger than MEASUREMENT_DELAY_CM  and lower number saves RAM)
+#define MAX_MEASUREMENT_DELAY	        20  //delay buffer size in bytes (1 byte = 1cm)- limits maximum measurement delay allowable (must be larger than MEASUREMENT_DELAY_CM  and lower number saves RAM)
 
 //defines used in the code
 #define DEFAULT_MEASURED_FILAMENT_DIA  DEFAULT_NOMINAL_FILAMENT_DIA  //set measured to nominal initially 
